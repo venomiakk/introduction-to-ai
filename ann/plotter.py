@@ -2,8 +2,6 @@ import os
 from pathlib import Path
 
 os.environ.setdefault("MPLCONFIGDIR", "/tmp/matplotlib")
-import matplotlib
-matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -11,9 +9,7 @@ import numpy as np
 PLOTS_DIR = Path(__file__).resolve().parent / "plots"
 
 
-def plot_training_curves(result, output_path, title="Artificial Neural Network Training History"):
-    """Plots training and test loss & accuracy curves across epochs."""
-    output_path.parent.mkdir(parents=True, exist_ok=True)
+def plot_training_curves(result, output_path=None, title="Artificial Neural Network Training History"):
     epochs = range(1, len(result["train_loss_history"]) + 1)
 
     fig, (ax_loss, ax_acc) = plt.subplots(1, 2, figsize=(13, 5))
@@ -65,13 +61,15 @@ def plot_training_curves(result, output_path, title="Artificial Neural Network T
 
     fig.suptitle(title, fontsize=13, fontweight="bold")
     fig.tight_layout()
-    fig.savefig(output_path, dpi=150)
-    plt.close(fig)
+    if output_path is not None:
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        fig.savefig(output_path, dpi=150)
+        plt.close(fig)
+    else:
+        plt.show()
 
 
-def plot_confusion_matrix(cm, class_names, output_path, title="Test Set Confusion Matrix"):
-    """Plots an annotated confusion matrix heatmap."""
-    output_path.parent.mkdir(parents=True, exist_ok=True)
+def plot_confusion_matrix(cm, class_names, output_path=None, title="Test Set Confusion Matrix"):
     fig, ax = plt.subplots(figsize=(7, 6))
 
     im = ax.imshow(cm, interpolation="nearest", cmap="Blues")
@@ -96,8 +94,12 @@ def plot_confusion_matrix(cm, class_names, output_path, title="Test Set Confusio
     ax.set_ylabel("True Class")
 
     fig.tight_layout()
-    fig.savefig(output_path, dpi=150)
-    plt.close(fig)
+    if output_path is not None:
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        fig.savefig(output_path, dpi=150)
+        plt.close(fig)
+    else:
+        plt.show()
 
 
 def plot_parameter_comparison(
@@ -105,10 +107,8 @@ def plot_parameter_comparison(
     loss_curves,
     acc_curves,
     num_runs,
-    output_path,
+    output_path=None,
 ):
-    """Plots averaged test loss and test accuracy curves across parameter values."""
-    output_path.parent.mkdir(parents=True, exist_ok=True)
     fig, (ax_loss, ax_acc) = plt.subplots(1, 2, figsize=(13, 5))
 
     for label, curve in loss_curves:
@@ -134,5 +134,9 @@ def plot_parameter_comparison(
         fontweight="bold",
     )
     fig.tight_layout()
-    fig.savefig(output_path, dpi=150)
-    plt.close(fig)
+    if output_path is not None:
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        fig.savefig(output_path, dpi=150)
+        plt.close(fig)
+    else:
+        plt.show()

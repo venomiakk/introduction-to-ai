@@ -18,7 +18,6 @@ DEFAULT_PARAMS = {
 
 
 def save_results_to_excel(records, output_file=RESULTS_EXCEL):
-    """Exports parameter study summary metrics to an Excel workbook."""
     wb = Workbook()
     ws = wb.active
     ws.title = "ANN_Experiments"
@@ -54,7 +53,6 @@ def save_results_to_excel(records, output_file=RESULTS_EXCEL):
 
 
 def run_parameter_experiments(num_runs=10):
-    """Evaluates how architecture, learning rate, epochs, and scaling affect ANN performance."""
     PLOTS_DIR.mkdir(parents=True, exist_ok=True)
 
     experiment_groups = {

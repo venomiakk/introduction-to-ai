@@ -4,8 +4,7 @@ from activations import relu, relu_derivative, softmax
 
 
 class DenseLayer:
-    """Fully connected neural network layer storing all neurons in matrix form.
-
+    """
     Each column j of weight matrix W and entry j of bias vector b represent
     the parameters of the j-th neuron in the layer.
     """
@@ -19,12 +18,12 @@ class DenseLayer:
         self.activation = activation
 
         rng = rng if rng is not None else np.random.default_rng()
-        # He initialization for ReLU layers, Xavier initialization for Softmax output layer
+        # initialization for layers
         scale = np.sqrt(2.0 / input_size) if activation == "relu" else np.sqrt(1.0 / input_size)
         self.W = rng.normal(0.0, scale, size=(input_size, output_size))
         self.b = np.zeros((1, output_size), dtype=np.float64)
 
-        # Cached values from the most recent forward pass (used in backpropagation)
+        # Cached values from the most recent forward pass for backpropagation
         self.X = None
         self.Z = None
         self.A = None
@@ -67,6 +66,6 @@ class DenseLayer:
         return dX
 
     def update(self, learning_rate):
-        """Vanilla gradient descent update (no optimizer, no regularization)."""
+        """gradient descent update"""
         self.W -= learning_rate * self.dW
         self.b -= learning_rate * self.db

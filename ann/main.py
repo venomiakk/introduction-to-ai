@@ -1,5 +1,9 @@
 from data_loader import load_iris_data
-from evaluation import compute_classification_metrics, numerical_gradient_check
+from evaluation import (
+    compute_classification_metrics,
+    compute_confusion_matrix,
+    numerical_gradient_check,
+)
 from experiments import DEFAULT_PARAMS, RESULTS_EXCEL, run_parameter_experiments
 from neural_network import ArtificialNeuralNetwork
 from plotter import PLOTS_DIR, plot_confusion_matrix, plot_training_curves
@@ -14,8 +18,7 @@ def print_confusion_matrix(cm, class_names):
         row = name.ljust(14) + "".join(f"{cm[i, j]:12d}" for j in range(len(short_names)))
         print(row)
 
-
-def main():
+def run_experiments():
     print("=== Laboratory 3, Exercise 1: Artificial Neural Network (Iris Classification) ===")
     print("Architecture: 4 -> 16 (ReLU) -> 12 (ReLU) -> 3 (Softmax)")
     print("Training: Full-dataset Vanilla Gradient Descent (no batching, no optimizer, no regularization)\n")
@@ -116,5 +119,22 @@ def main():
     print(f"Saved parameter study plots to {PLOTS_DIR}")
 
 
+def main():
+    data = load_iris_data()
+    model = ArtificialNeuralNetwork()
+    model.fit(data["X_train"], data["Y_train_onehot"])
+
+    y_pred = model.predict(data["X_test"])
+    cm = compute_confusion_matrix(data["y_test"], y_pred, num_classes=len(data["class_names"]))
+    metrics = compute_classification_metrics(cm, data["class_names"])
+
+    print(f"Test Accuracy: {model.accuracy(data['X_test'], data['y_test']) * 100:.2f}%\n")
+    print(f"{'Class':<18} {'Precision':>10} {'Recall':>10} {'F1-Score':>10}")
+    print("-" * 51)
+    for m in metrics:
+        print(f"{m['class_name']:<18} {m['precision']:10.4f} {m['recall']:10.4f} {m['f1']:10.4f}")
+
+    plot_confusion_matrix(cm, data["class_names"])
+
 if __name__ == "__main__":
-    main()
+    run_experiments()

@@ -74,6 +74,7 @@ def plot_contour_swarm(result, output_path, bounds=(-4.5, 4.5)):
     ax.scatter(
         [result["best_x"]],
         [result["best_y"]],
+        alpha=0.5,
         color="red",
         marker="*",
         s=220,

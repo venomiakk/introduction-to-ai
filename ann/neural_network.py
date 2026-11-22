@@ -6,9 +6,6 @@ from layers import DenseLayer
 
 
 class ArtificialNeuralNetwork:
-    """Simple fully connected feedforward neural network with 2 hidden ReLU layers
-    and a Softmax output layer, trained with full-dataset gradient descent.
-    """
 
     def __init__(
         self,
@@ -38,7 +35,7 @@ class ArtificialNeuralNetwork:
         ]
 
     def forward(self, X, cache=True):
-        """Runs a forward pass through all layers and returns class probabilities."""
+        """Runs a forward pass through all layers, returns class probabilities."""
         out = X
         for layer in self.layers:
             out = layer.forward(out, cache=cache)
@@ -62,7 +59,7 @@ class ArtificialNeuralNetwork:
             grad = layer.backward(grad, is_output_delta=False)
 
     def update_parameters(self):
-        """Applies one vanilla gradient descent step to all layers."""
+        """Applies gradient descent step to all layers."""
         for layer in self.layers:
             layer.update(self.learning_rate)
 
@@ -71,15 +68,12 @@ class ArtificialNeuralNetwork:
         return self.forward(X, cache=False)
 
     def predict(self, X):
-        """Returns predicted class indices (argmax of softmax probabilities)."""
         return np.argmax(self.predict_proba(X), axis=1)
 
     def accuracy(self, X, y_true):
-        """Computes classification accuracy in [0.0, 1.0]."""
         return float(np.mean(self.predict(X) == y_true))
 
     def fit(self, X_train, Y_train_onehot, X_test=None, Y_test_onehot=None, verbose=False):
-        """Trains the network using full-dataset gradient descent (no batching)."""
         start_time = time.perf_counter()
 
         y_train_idx = np.argmax(Y_train_onehot, axis=1)
@@ -93,14 +87,14 @@ class ArtificialNeuralNetwork:
         log_interval = max(1, self.epochs // 10)
 
         for epoch in range(1, self.epochs + 1):
-            # 1. Forward pass on the entire training set (no batching)
+            # 1. Forward pass on the entire training set
             Y_pred_train = self.forward(X_train, cache=True)
 
             # 2. Compute training loss and accuracy
             train_loss = self.compute_loss(Y_train_onehot, Y_pred_train)
             train_acc = float(np.mean(np.argmax(Y_pred_train, axis=1) == y_train_idx))
 
-            # 3. Backpropagation & vanilla gradient descent update
+            # 3. Backpropagation & gradient descent update
             self.backward(Y_train_onehot, Y_pred_train)
             self.update_parameters()
 

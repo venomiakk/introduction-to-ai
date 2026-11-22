@@ -2,7 +2,6 @@ import numpy as np
 
 
 def compute_confusion_matrix(y_true, y_pred, num_classes=3):
-    """Builds a (num_classes, num_classes) confusion matrix (rows=true, cols=predicted)."""
     cm = np.zeros((num_classes, num_classes), dtype=np.int64)
     for t, p in zip(y_true, y_pred):
         cm[int(t), int(p)] += 1
@@ -10,7 +9,6 @@ def compute_confusion_matrix(y_true, y_pred, num_classes=3):
 
 
 def compute_classification_metrics(cm, class_names):
-    """Computes per-class precision, recall, and F1 score from a confusion matrix."""
     metrics = []
     for idx, name in enumerate(class_names):
         tp = int(cm[idx, idx])
